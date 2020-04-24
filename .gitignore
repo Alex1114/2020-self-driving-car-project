@@ -1,0 +1,6 @@
+devel/
+build/
+.vscode
+*.so
+*.bag
+*.pcd
