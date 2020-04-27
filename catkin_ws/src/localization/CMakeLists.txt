@@ -211,3 +211,7 @@ include_directories(
 add_executable(simpleICP src/simple_icp.cpp)
 target_link_libraries(simpleICP ${catkin_LIBRARIES})
 add_dependencies(simpleICP ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+add_executable(alex_test src/alex_test.cpp)
+target_link_libraries(alex_test ${catkin_LIBRARIES})
+add_dependencies(alex_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
