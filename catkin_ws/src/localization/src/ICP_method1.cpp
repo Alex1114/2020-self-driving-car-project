@@ -71,9 +71,9 @@ private:
     Eigen::Matrix4f tf_icp;
 
     int f = 1;
-    float max_xy = 20;
+    float max_xy = 30;
     float max_z = 10;
-    float max_car_xy = 10;
+    float max_car_xy = 20;
     float leaf_size = 0.5;
 
 public:
@@ -172,16 +172,15 @@ void ICP_method1::cb_lidar(const sensor_msgs::PointCloud2ConstPtr &pc)
     passY.setInputCloud(map_copy);
     passY.filter(*map_copy);
 
+    passZ.setFilterLimits(-12, -5);
+    passZ.setInputCloud(map_copy);
+    passZ.filter(*map_copy);
+
     // voxel.setInputCloud(map_copy);
     // voxel.filter(*map_copy);
 
     // sor.setInputCloud(map_copy);
     // sor.filter(*map_copy);
-
-    passZ.setFilterFieldName("z");
-    passZ.setFilterLimits(-12, -5);
-    passZ.setInputCloud(map_copy);
-    passZ.filter(*map_copy);
 
     cout << "map_copy size:" << map_copy->points.size() << endl;
     toROSMsg(*map_copy, ros_map_copy);
@@ -214,10 +213,10 @@ void ICP_method1::cb_lidar(const sensor_msgs::PointCloud2ConstPtr &pc)
     pcl::transformPointCloud(*lidar, *lidar, initial_guess);
     icp.setInputSource(lidar);
     icp.setInputTarget(map_copy);
-    icp.setMaxCorrespondenceDistance(100);
-    icp.setTransformationEpsilon(1e-10);
-    icp.setEuclideanFitnessEpsilon(0.001);
-    icp.setMaximumIterations(100);
+    icp.setMaxCorrespondenceDistance(200);
+    icp.setTransformationEpsilon(1e-11);
+    icp.setEuclideanFitnessEpsilon(0.0001);
+    icp.setMaximumIterations(1000);
     // icp.setRANSACOutlierRejectionThreshold (1.5);
     icp.align(*result);
 
