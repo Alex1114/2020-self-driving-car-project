@@ -4,3 +4,4 @@ build/
 *.so
 *.bag
 *.pcd
+*.csv
