@@ -215,3 +215,12 @@ add_dependencies(simpleICP ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED
 add_executable(alex_test src/alex_test.cpp)
 target_link_libraries(alex_test ${catkin_LIBRARIES})
 add_dependencies(alex_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+add_executable(fix_to_odom src/fix_to_odom.cpp)
+target_link_libraries(fix_to_odom ${catkin_LIBRARIES})
+add_dependencies(fix_to_odom ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+
+add_executable(draw_ekf src/draw_ekf.cpp)
+target_link_libraries(draw_ekf ${catkin_LIBRARIES})
+add_dependencies(draw_ekf ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
