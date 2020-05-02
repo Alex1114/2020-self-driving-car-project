@@ -67,13 +67,17 @@ private:
     sensor_msgs::PointCloud2 ros_map_copy;
     sensor_msgs::PointCloud2 ros_lidar;
 
+    bool init_guess = false;
     Eigen::Matrix4f initial_guess;
     Eigen::Matrix4f tf_icp;
+    Eigen::Matrix4f v2b;
 
     int f = 1;
-    float max_xy = 30;
-    float max_z = 10;
-    float max_car_xy = 20;
+    float max_xy = 50;
+    float max_car_x = 30;
+    float max_car_y = 15;
+    float max_car_z = 10;
+    float min_car_z = -10;
     float leaf_size = 0.5;
 
 public:
@@ -84,6 +88,21 @@ public:
 
 ICP_method1::ICP_method1(NodeHandle &nh)
 {
+    // parameter
+    // -----------------------------------------------------------------------------------
+    param::get("~max_xy", max_xy);
+    param::get("~max_car_x", max_car_x);
+    param::get("~max_car_y", max_car_y);
+    param::get("~max_car_z", max_car_z);
+    param::get("~min_car_z", min_car_z);
+    ROS_INFO("max_xy %f", max_xy);
+    ROS_INFO("max_car_x %f", max_car_x);
+    ROS_INFO("max_car_y %f", max_car_y);
+    ROS_INFO("max_car_z %f", max_car_z);
+    ROS_INFO("min_car_z %f", min_car_z);
+
+    // -----------------------------------------------------------------------------------
+
     // load map
     // -----------------------------------------------------------------------------------
     char const *user = std::getenv("USER");
@@ -100,28 +119,22 @@ ICP_method1::ICP_method1(NodeHandle &nh)
         exit(0);
     }
     cout << "map size:" << map->size() << endl;
-    // load map
+    cout << "---------------------------" << endl;
     // -----------------------------------------------------------------------------------
+
     // point cloud init
     // ----------------------------------------------------------------------------
     lidar.reset(new PointCloud<PointXYZ>);
     result.reset(new PointCloud<PointXYZ>());
 
     voxel.setLeafSize(leaf_size, leaf_size, leaf_size);
-
     passX.setFilterFieldName("x");
-    passX.setFilterLimits(-max_xy, max_xy);
-
     passY.setFilterFieldName("y");
-    passY.setFilterLimits(-max_xy, max_xy);
-
     passZ.setFilterFieldName("z");
-    passZ.setFilterLimits(-max_z, max_z);
-
     sor.setMeanK(50);
     sor.setStddevMulThresh(0.5);
-    // point cloud init
     // ----------------------------------------------------------------------------
+
     // subscribe & pub
     // -----------------------------------------------------------------------------------
     pub_map = nh.advertise<sensor_msgs::PointCloud2>("/map_crop", 1);
@@ -129,25 +142,30 @@ ICP_method1::ICP_method1(NodeHandle &nh)
     pub_lidar = nh.advertise<sensor_msgs::PointCloud2>("/lidar_mapped", 1);
     sub_lidar = nh.subscribe("/lidar_points", 0, &ICP_method1::cb_lidar, this);
     sub_fix = nh.subscribe("/fix", 0, &ICP_method1::cb_fix, this);
-    // subscribe & pub
     // -----------------------------------------------------------------------------------
-    // initial_guess
-    // -------------------------------------------------------------------------------
-    //                          w,x,y,z
-    Eigen::Quaternionf q(-0.604774534702, 0.00664933072403, 0.0141519503668, 0.796243309975);
-    // Eigen::Quaternionf q(0, 0, 0, 1);
-    Eigen::Matrix3f mat = q.toRotationMatrix();
-    initial_guess << mat(0, 0), mat(0, 1), mat(0, 2), -263.5926208496094,
-        mat(1, 0), mat(1, 1), mat(1, 2), -67.85790252685547,
-        mat(2, 0), mat(2, 1), mat(2, 2), -9.890708923339844,
-        0, 0, 0, 1;
-
-    // -------------------------------------------------------------------------------
 }
 
 void ICP_method1::cb_lidar(const sensor_msgs::PointCloud2ConstPtr &pc)
 {
-    IterativeClosestPoint<PointXYZ, PointXYZ> icp;
+    // initial_guess
+    // -------------------------------------------------------------------------------
+    if (!init_guess)
+    {
+        sensor_msgs::Imu::ConstPtr imu = topic::waitForMessage<sensor_msgs::Imu>("/imu/data", Duration(1));
+        Eigen::Quaternionf q(imu->orientation.w, imu->orientation.x, imu->orientation.y, imu->orientation.z);
+        Eigen::Matrix3f mat = q.toRotationMatrix();
+        geometry_msgs::PointStamped::ConstPtr gps = topic::waitForMessage<geometry_msgs::PointStamped>("/fix", Duration(1));
+        initial_guess << mat(0, 0), mat(0, 1), mat(0, 2), gps->point.x,
+            mat(1, 0), mat(1, 1), mat(1, 2), gps->point.y,
+            mat(2, 0), mat(2, 1), mat(2, 2), gps->point.z,
+            0, 0, 0, 1;
+        cout << "initial guess :" << endl;
+        cout << initial_guess << endl;
+        cout << "---------------------------" << endl;
+        init_guess = true;
+    }
+    // -------------------------------------------------------------------------------
+
     fromROSMsg(*pc, *lidar);
     *map_copy = *map;
     // position
@@ -172,9 +190,9 @@ void ICP_method1::cb_lidar(const sensor_msgs::PointCloud2ConstPtr &pc)
     passY.setInputCloud(map_copy);
     passY.filter(*map_copy);
 
-    passZ.setFilterLimits(-12, -5);
-    passZ.setInputCloud(map_copy);
-    passZ.filter(*map_copy);
+    // passZ.setFilterLimits(-12, -5);
+    // passZ.setInputCloud(map_copy);
+    // passZ.filter(*map_copy);
 
     // voxel.setInputCloud(map_copy);
     // voxel.filter(*map_copy);
@@ -189,43 +207,8 @@ void ICP_method1::cb_lidar(const sensor_msgs::PointCloud2ConstPtr &pc)
     pub_map.publish(ros_map_copy);
     // ----------------------------------------------------------------------------------------
 
-    // lidar_filter
-    // --------------------------------------------------------------------------------------
-    passX.setFilterLimits(-max_car_xy, max_car_xy);
-    passY.setFilterLimits(-max_car_xy, max_car_xy);
-    // passZ.setFilterLimits(-max_z, max_z);
-
-    passX.setInputCloud(lidar);
-    passX.filter(*lidar);
-    passY.setInputCloud(lidar);
-    passY.filter(*lidar);
-    // passZ.setInputCloud(lidar);
-    // passZ.filter(*lidar);
-    // voxel.setInputCloud(lidar);
-    // voxel.filter(*lidar);
-    // sor.setInputCloud(lidar);
-    // sor.filter(*lidar);
-    // lidar_filter
-    // --------------------------------------------------------------------------------------
-
-    // icp
-    // -----------------------------------------------------------------------------------------
-    pcl::transformPointCloud(*lidar, *lidar, initial_guess);
-    icp.setInputSource(lidar);
-    icp.setInputTarget(map_copy);
-    icp.setMaxCorrespondenceDistance(200);
-    icp.setTransformationEpsilon(1e-11);
-    icp.setEuclideanFitnessEpsilon(0.0001);
-    icp.setMaximumIterations(1000);
-    // icp.setRANSACOutlierRejectionThreshold (1.5);
-    icp.align(*result);
-
-    tf_icp = icp.getFinalTransformation();
-    cout << "frame:" << f << endl;
-    cout << "result point size:" << result->points.size() << endl;
-    cout << "has converged:" << icp.hasConverged() << " score: " << icp.getFitnessScore() << endl;
-
-    // transform final result and publish
+    // transform
+    // -----------------------------------------------------------------------------------
     tf::StampedTransform tf_v2b;
     try
     {
@@ -238,9 +221,52 @@ void ICP_method1::cb_lidar(const sensor_msgs::PointCloud2ConstPtr &pc)
         ROS_ERROR("%s", ex.what());
         return;
     }
-
-    Eigen::Matrix4f v2b, tf_result;
     pcl_ros::transformAsMatrix(tf_v2b, v2b);
+    // ----------------------------------------------------------------------------------------
+
+    // lidar_filter
+    // ----------------------------------------------------------------------------------------
+    passX.setFilterLimits(-max_car_x, max_car_x);
+    passX.setInputCloud(lidar);
+    passX.filter(*lidar);
+
+    passY.setFilterLimits(-max_car_y, max_car_y);
+    passY.setInputCloud(lidar);
+    passY.filter(*lidar);
+
+    passZ.setFilterLimits(min_car_z + v2b(2, 3), max_car_z + v2b(2, 3));
+    passZ.setInputCloud(lidar);
+    passZ.filter(*lidar);
+
+    // voxel.setInputCloud(lidar);
+    // voxel.filter(*lidar);
+
+    // sor.setInputCloud(lidar);
+    // sor.filter(*lidar);
+    // --------------------------------------------------------------------------------------
+
+    // icp
+    // -----------------------------------------------------------------------------------------
+    IterativeClosestPoint<PointXYZ, PointXYZ> icp;
+    pcl::transformPointCloud(*lidar, *lidar, initial_guess);
+    icp.setInputSource(lidar);
+    icp.setInputTarget(map_copy);
+    icp.setMaxCorrespondenceDistance(1000);
+    icp.setTransformationEpsilon(1e-12);
+    icp.setEuclideanFitnessEpsilon(1e-6);
+    icp.setMaximumIterations(2000);
+    // icp.setRANSACOutlierRejectionThreshold(1.5);
+    icp.align(*result);
+
+    tf_icp = icp.getFinalTransformation();
+    cout << "frame:" << f << endl;
+    cout << "result point size:" << result->points.size() << endl;
+    cout << "has converged:" << icp.hasConverged() << " score: " << icp.getFitnessScore() << endl;
+    // --------------------------------------------------------------------------------------------
+
+    // result
+    // --------------------------------------------------------------------------------------------
+    Eigen::Matrix4f tf_result;
     tf_result = tf_icp * initial_guess * v2b;
 
     Eigen::Matrix3f rotation;
@@ -270,10 +296,12 @@ void ICP_method1::cb_lidar(const sensor_msgs::PointCloud2ConstPtr &pc)
     // -------------------------------------------------------------------------------------
 
     //  reset
+    // -------------------------------------------------------------------------------------
     map_copy->points.clear();
     lidar->points.clear();
     initial_guess = tf_icp * initial_guess;
     cout << "--------------------------------" << endl;
+    // -------------------------------------------------------------------------------------
 }
 
 void ICP_method1::cb_fix(const geometry_msgs::PointStamped fix)
