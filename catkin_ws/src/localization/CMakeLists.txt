@@ -227,3 +227,7 @@ add_dependencies(draw_ekf ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_
 add_executable(ICP_method1 src/ICP_method1.cpp)
 target_link_libraries(ICP_method1 ${catkin_LIBRARIES})
 add_dependencies(ICP_method1 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+add_executable(ICP_method1_hard src/ICP_method1_hard.cpp)
+target_link_libraries(ICP_method1_hard ${catkin_LIBRARIES})
+add_dependencies(ICP_method1_hard ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
