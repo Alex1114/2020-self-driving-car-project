@@ -16,8 +16,6 @@ class csv_save():
         self._t = []
         ds = datetime.datetime.now()
         ds = str(ds)
-        date = ds.split(" ")[0]
-        time = ds.split(" ")[1].split(".")[0]
         homedir = os.path.expanduser("~")
         self.filename = homedir + "/2020-self-driving-car-project/result/" + \
             str(ds).split(".")[0].replace(":", "_").replace(" ", "_") + ".csv"
@@ -41,7 +39,6 @@ class csv_save():
         self._t.append(str(yaw))
         self._t.append(str(pitch))
         self._t.append(str(roll))
-        print self._t[0]
 
         self._f.append(self._t)
         self._t = []
