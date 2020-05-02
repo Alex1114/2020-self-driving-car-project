@@ -2,11 +2,11 @@
 
 <launch>
     <node pkg="localization" type="ICP_method1" name="icp" output="screen">
-        <param name="max_xy" value="50" />
-        <param name="max_car_x" value="30" />
-        <param name="max_car_y" value="15" />
-        <param name="max_car_z" value="10" />
-        <param name="min_car_z" value="-10" />
+        <param name="max_xy" value="120" />
+        <param name="max_car_x" value="50" />
+        <param name="max_car_y" value="30" />
+        <param name="max_car_z" value="3" />
+        <param name="min_car_z" value="-5" />
     </node>
     <node pkg="localization" type="generate_csv.py" name="csv" output="screen"></node>
 </launch>
@@ -28,3 +28,55 @@ final score: 0.7552018140417625
 <param name="max_car_z" value="10" />
 <param name="min_car_z" value="-10" /> -->
 
+<!-- Total score: 0.8600590052649373 0.7610218320493318 0.5336441880157462 0.32245945404420623
+final score: 0.734042699131703
+<param name="max_xy" value="30" />
+<param name="max_car_x" value="20" />
+<param name="max_car_y" value="10" />
+<param name="max_car_z" value="5" />
+<param name="min_car_z" value="-5" /> -->
+
+<!-- Total score: 0.9088563695642522 0.7504890611100012 0.7268140797120414 0.30930832803376757
+final score: 0.7673504130442822
+<param name="max_xy" value="80" />
+<param name="max_car_x" value="50" />
+<param name="max_car_y" value="10" />
+<param name="max_car_z" value="5" />
+<param name="min_car_z" value="-5" /> -->
+
+<!-- Total score: 0.9664521978588846 0.9046040336586184 0.7355236399162313 0.4983055866749266
+final score: 0.8718054152661171
+<param name="max_xy" value="80" />
+<param name="max_car_x" value="50" />
+<param name="max_car_y" value="10" />
+<param name="max_car_z" value="5" />
+<param name="min_car_z" value="-5" /> 
+max_car_+y +40 -->
+
+
+<!-- private_1
+score 0.05~0.07
+r=0, p=0, y=3.14;
+<param name="max_xy" value="80" />
+<param name="max_car_x" value="50" />
+<param name="max_car_y" value="10" />
+<param name="max_car_z" value="10" />
+<param name="min_car_z" value="-5" />  -->
+
+<!-- private_2
+score 0.04~0.06
+r=0, p=0, y=2.14;
+<param name="max_xy" value="80" />
+<param name="max_car_x" value="50" />
+<param name="max_car_y" value="10" />
+<param name="max_car_z" value="10" />
+<param name="min_car_z" value="-5" /> -->
+
+<!-- private_3
+score 0.1~0.7
+r=0, p=0, y=3.14;
+<param name="max_xy" value="120" />
+<param name="max_car_x" value="50" />
+<param name="max_car_y" value="30" />
+<param name="max_car_z" value="3" />
+<param name="min_car_z" value="-5" /> -->

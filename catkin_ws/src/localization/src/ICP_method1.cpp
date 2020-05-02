@@ -72,7 +72,7 @@ private:
     Eigen::Matrix4f tf_icp;
     Eigen::Matrix4f v2b;
 
-    int f = 1;
+    int frame = 1;
     float max_xy = 50;
     float max_car_x = 30;
     float max_car_y = 15;
@@ -141,7 +141,6 @@ ICP_method1::ICP_method1(NodeHandle &nh)
     pub_result = nh.advertise<geometry_msgs::PoseStamped>("/result", 1);
     pub_lidar = nh.advertise<sensor_msgs::PointCloud2>("/lidar_mapped", 1);
     sub_lidar = nh.subscribe("/lidar_points", 0, &ICP_method1::cb_lidar, this);
-    sub_fix = nh.subscribe("/fix", 0, &ICP_method1::cb_fix, this);
     // -----------------------------------------------------------------------------------
 }
 
@@ -151,14 +150,26 @@ void ICP_method1::cb_lidar(const sensor_msgs::PointCloud2ConstPtr &pc)
     // -------------------------------------------------------------------------------
     if (!init_guess)
     {
-        sensor_msgs::Imu::ConstPtr imu = topic::waitForMessage<sensor_msgs::Imu>("/imu/data", Duration(1));
-        Eigen::Quaternionf q(imu->orientation.w, imu->orientation.x, imu->orientation.y, imu->orientation.z);
-        Eigen::Matrix3f mat = q.toRotationMatrix();
+        // sensor_msgs::Imu::ConstPtr imu = topic::waitForMessage<sensor_msgs::Imu>("/imu/data", Duration(1));
+        // Eigen::Quaternionf q(imu->orientation.w, imu->orientation.x, imu->orientation.y, imu->orientation.z);
+        // Eigen::Matrix3f mat = q.toRotationMatrix();
+
+        tf::Quaternion q_rot;
+        double r=0, p=0, y=3.14;
+        q_rot.setRPY(r, p, y);
+        tf::Matrix3x3 mat;
+        mat.setRotation(q_rot);
+ 
         geometry_msgs::PointStamped::ConstPtr gps = topic::waitForMessage<geometry_msgs::PointStamped>("/fix", Duration(1));
-        initial_guess << mat(0, 0), mat(0, 1), mat(0, 2), gps->point.x,
-            mat(1, 0), mat(1, 1), mat(1, 2), gps->point.y,
-            mat(2, 0), mat(2, 1), mat(2, 2), gps->point.z,
+        initial_guess << mat[0][0], mat[0][1], mat[0][2], gps->point.x,
+            mat[1][0], mat[1][1], mat[1][2], gps->point.y,
+            mat[2][0], mat[2][1], mat[2][2], gps->point.z,
             0, 0, 0, 1;
+        // initial_guess << mat(0,0), mat(0,1), mat(0,2), gps->point.x,
+        //     mat(1,0), mat(1,1), mat(1,2), gps->point.y,
+        //     mat(2,0), mat(2,1), mat(2,2), gps->point.z,
+        //     0, 0, 0, 1;
+  
         cout << "initial guess :" << endl;
         cout << initial_guess << endl;
         cout << "---------------------------" << endl;
@@ -259,7 +270,7 @@ void ICP_method1::cb_lidar(const sensor_msgs::PointCloud2ConstPtr &pc)
     icp.align(*result);
 
     tf_icp = icp.getFinalTransformation();
-    cout << "frame:" << f << endl;
+    cout << "frame:" << frame << endl;
     cout << "result point size:" << result->points.size() << endl;
     cout << "has converged:" << icp.hasConverged() << " score: " << icp.getFitnessScore() << endl;
     // --------------------------------------------------------------------------------------------
@@ -302,13 +313,9 @@ void ICP_method1::cb_lidar(const sensor_msgs::PointCloud2ConstPtr &pc)
     initial_guess = tf_icp * initial_guess;
     cout << "--------------------------------" << endl;
     // -------------------------------------------------------------------------------------
+    frame += 1;
 }
 
-void ICP_method1::cb_fix(const geometry_msgs::PointStamped fix)
-{
-    f += 1;
-    // cout << "fix:" << t << endl;
-}
 
 int main(int argc, char *argv[])
 {
