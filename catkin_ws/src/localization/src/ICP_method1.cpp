@@ -155,14 +155,14 @@ void ICP_method1::cb_lidar(const sensor_msgs::PointCloud2ConstPtr &pc)
         // Eigen::Matrix3f mat = q.toRotationMatrix();
 
         tf::Quaternion q_rot;
-        double r=0, p=0, y=3.14;
+        double r=0, p=0, y=2.97;
         q_rot.setRPY(r, p, y);
         tf::Matrix3x3 mat;
         mat.setRotation(q_rot);
  
         geometry_msgs::PointStamped::ConstPtr gps = topic::waitForMessage<geometry_msgs::PointStamped>("/fix", Duration(1));
-        initial_guess << mat[0][0], mat[0][1], mat[0][2], gps->point.x,
-            mat[1][0], mat[1][1], mat[1][2], gps->point.y,
+        initial_guess << mat[0][0], mat[0][1], mat[0][2], gps->point.x + 2,
+            mat[1][0], mat[1][1], mat[1][2], gps->point.y - 2,
             mat[2][0], mat[2][1], mat[2][2], gps->point.z,
             0, 0, 0, 1;
         // initial_guess << mat(0,0), mat(0,1), mat(0,2), gps->point.x,
