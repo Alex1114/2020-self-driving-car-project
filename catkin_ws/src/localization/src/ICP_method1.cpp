@@ -237,11 +237,11 @@ void ICP_method1::cb_lidar(const sensor_msgs::PointCloud2ConstPtr &pc)
 
     // lidar_filter
     // ----------------------------------------------------------------------------------------
-    passX.setFilterLimits(-max_car_x, max_car_x);
+    passX.setFilterLimits(-max_car_x + 40, max_car_x);
     passX.setInputCloud(lidar);
     passX.filter(*lidar);
 
-    passY.setFilterLimits(-max_car_y, max_car_y);
+    passY.setFilterLimits(-max_car_y + 22, max_car_y);
     passY.setInputCloud(lidar);
     passY.filter(*lidar);
 

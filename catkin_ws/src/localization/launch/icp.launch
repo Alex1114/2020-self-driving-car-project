@@ -3,8 +3,8 @@
 <launch>
     <node pkg="localization" type="ICP_method1" name="icp" output="screen">
         <param name="max_xy" value="120" />
-        <param name="max_car_x" value="15" />
-        <param name="max_car_y" value="15" />
+        <param name="max_car_x" value="50" />
+        <param name="max_car_y" value="30" />
         <param name="max_car_z" value="10" />
         <param name="min_car_z" value="-5" />
     </node>
@@ -96,5 +96,28 @@ x+2, y-2
 <param name="max_xy" value="120" />
 <param name="max_car_x" value="15" />
 <param name="max_car_y" value="15" />
+<param name="max_car_z" value="10" />
+<param name="min_car_z" value="-5" /> -->
+
+<!-- private_3
+score 0.04~0.3
+r=0, p=0, y=2.97;
+x+2, y-2
+max_car_-y +32
+<param name="max_xy" value="120" />
+<param name="max_car_x" value="50" />
+<param name="max_car_y" value="30" />
+<param name="max_car_z" value="10" />
+<param name="min_car_z" value="-5" /> -->
+
+<!-- private_3
+score 0.04~0.09
+r=0, p=0, y=2.97;
+x+2, y-2
+max_car_-x +40
+max_car_-y +32
+<param name="max_xy" value="120" />
+<param name="max_car_x" value="50" />
+<param name="max_car_y" value="30" />
 <param name="max_car_z" value="10" />
 <param name="min_car_z" value="-5" /> -->
