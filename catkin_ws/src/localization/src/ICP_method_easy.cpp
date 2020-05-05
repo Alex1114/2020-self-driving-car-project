@@ -74,11 +74,14 @@ private:
 
     int frame = 1;
     float max_xy = 50;
+    float max_car_xx = 30;
     float max_car_x = 30;
+    float max_car_yy = 15;
     float max_car_y = 15;
     float max_car_z = 10;
     float min_car_z = -10;
     float leaf_size = 0.5;
+    double r=0, p=0, y=2.97;
 
 public:
     ICP_method1(NodeHandle &);
@@ -91,15 +94,21 @@ ICP_method1::ICP_method1(NodeHandle &nh)
     // parameter
     // -----------------------------------------------------------------------------------
     param::get("~max_xy", max_xy);
+    param::get("~max_car_xx", max_car_xx);
     param::get("~max_car_x", max_car_x);
+    param::get("~max_car_yy", max_car_yy);
     param::get("~max_car_y", max_car_y);
     param::get("~max_car_z", max_car_z);
     param::get("~min_car_z", min_car_z);
+    param::get("~yaw", y);
     ROS_INFO("max_xy %f", max_xy);
+    ROS_INFO("max_car_xx %f", max_car_xx);
     ROS_INFO("max_car_x %f", max_car_x);
+    ROS_INFO("max_car_yy %f", max_car_yy);
     ROS_INFO("max_car_y %f", max_car_y);
     ROS_INFO("max_car_z %f", max_car_z);
     ROS_INFO("min_car_z %f", min_car_z);
+    ROS_INFO("yaw %f", y);
 
     // -----------------------------------------------------------------------------------
 
@@ -155,7 +164,6 @@ void ICP_method1::cb_lidar(const sensor_msgs::PointCloud2ConstPtr &pc)
         // Eigen::Matrix3f mat = q.toRotationMatrix();
 
         tf::Quaternion q_rot;
-        double r=0, p=0, y=2.97;
         q_rot.setRPY(r, p, y);
         tf::Matrix3x3 mat;
         mat.setRotation(q_rot);
@@ -237,11 +245,11 @@ void ICP_method1::cb_lidar(const sensor_msgs::PointCloud2ConstPtr &pc)
 
     // lidar_filter
     // ----------------------------------------------------------------------------------------
-    passX.setFilterLimits(-max_car_x + 40, max_car_x);
+    passX.setFilterLimits(-max_car_x, max_car_xx);
     passX.setInputCloud(lidar);
     passX.filter(*lidar);
 
-    passY.setFilterLimits(-max_car_y + 22, max_car_y);
+    passY.setFilterLimits(-max_car_y, max_car_yy);
     passY.setInputCloud(lidar);
     passY.filter(*lidar);
 

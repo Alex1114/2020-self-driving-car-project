@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<launch>
+    <node pkg="localization" type="ICP_method_easy" name="icp" output="screen">
+        <param name="max_xy" value="80" />
+        <param name="max_car_xx" value="50" />
+        <param name="max_car_x" value="50" />
+        <param name="max_car_yy" value="10" />
+        <param name="max_car_y" value="10" />
+        <param name="max_car_z" value="10" />
+        <param name="min_car_z" value="-5" />
+        <param name="yaw" value="3.14" />
+    </node>
+    <node pkg="localization" type="generate_csv.py" name="csv" output="screen"></node>
+</launch>
+
+<!-- max_car_xx means max_car_+x
+max_car_x  means max_car_-x -->
+
+<!-- Total score: 0.9664521978588846 0.9046040336586184 0.7355236399162313 0.4983055866749266
+final score: 0.8718054152661171
+<param name="max_xy" value="80" />
+<param name="max_car_x" value="50" />
+<param name="max_car_y" value="10" />
+<param name="max_car_z" value="5" />
+<param name="min_car_z" value="-5" /> 
+max_car_+y +40 -->
+
+
+<!-- private_1
+score 0.05~0.07
+r=0, p=0, y=3.14;
+<param name="max_xy" value="80" />
+<param name="max_car_x" value="50" />
+<param name="max_car_y" value="10" />
+<param name="max_car_z" value="10" />
+<param name="min_car_z" value="-5" />  -->
+<!-- 0.974166310237 0.937149934642 0.840476055578 0.399749921826
+final score: 0.888549095692 -->
+
+
+
+<!-- private_2
+score 0.04~0.06
+r=0, p=0, y=2.14;
+<param name="max_xy" value="80" />
+<param name="max_car_x" value="50" />
+<param name="max_car_y" value="10" />
+<param name="max_car_z" value="10" />
+<param name="min_car_z" value="-5" /> -->
+<!-- 0.934077084613 0.968916921103 0.980688533633 0.377557942573
+final score: 0.897022249907 -->
+
+
+<!-- private_3
+score 0.04~0.09
+r=0, p=0, y=2.97;
+x+2, y-2
+max_car_-x +40
+max_car_-y +32
+<param name="max_xy" value="120" />
+<param name="max_car_x" value="50" />
+<param name="max_car_y" value="30" />
+<param name="max_car_z" value="10" />
+<param name="min_car_z" value="-5" /> -->

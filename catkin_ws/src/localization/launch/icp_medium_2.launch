@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <launch>
-    <node pkg="localization" type="ICP_method1_hard" name="icp" output="screen">
+    <node pkg="localization" type="ICP_method_medium" name="icp" output="screen">
         <param name="max_xy" value="150" />
         
         <param name="max_car_x" value="120" />
