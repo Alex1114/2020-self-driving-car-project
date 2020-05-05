@@ -2,9 +2,9 @@
   
 ## How to run  
 ### Download data  
-```bash
-$ cd /data
+```
 $ python3 download_ITRI.py
+$ python3 download_Nuscenes.py
 ```  
 
 ### Catkin_make
@@ -15,23 +15,23 @@ $ source catkin_make.sh
 #### ITRI_Private_1~3.bag
 ```bash
 $ source environment.sh
-$ roslaunch localization icp_easy_**[1~3]**.launch 
+$ roslaunch localization icp_easy_[1~3].launch 
   
 Open another terminal.
   
 $ cd ~/self-driving-car-project/data/ITRI
-$ rosbag play ITRI_Private_**[1~3]**.bag
+$ rosbag play ITRI_Private_[1~3].bag
 ```
   
 #### Nuscenes_Private_1~3.bag
 ```bash
 $ source environment.sh
-$ roslaunch localization icp_medium_**[1~3]**.launch 
+$ roslaunch localization icp_medium_[1~3].launch 
   
 Open another terminal.
   
 $ cd ~/self-driving-car-project/data/Nuscenes
-$ rosbag play Nu_Private_**[1~3]**.bag
+$ rosbag play Nu_Private_[1~3].bag
 ```
 ![1](figures/1.png)  
   
