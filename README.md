@@ -16,9 +16,9 @@ $ source catkin_make.sh
 ```bash
 $ source environment.sh
 $ roslaunch localization icp_easy_[1~3].launch 
-```
+  
 Open another terminal.
-```bash
+  
 $ cd ~/self-driving-car-project/data/ITRI
 $ rosbag play ITRI_Private_[1~3].bag
 ```
@@ -27,21 +27,21 @@ $ rosbag play ITRI_Private_[1~3].bag
 ```bash
 $ source environment.sh
 $ roslaunch localization icp_medium_[1~3].launch 
-```
+  
 Open another terminal.
-```bash
+  
 $ cd ~/self-driving-car-project/data/Nuscenes
 $ rosbag play Nu_Private_[1~3].bag
 ```
-![1](figures/1.gif)  
+![1](figures/1.png)  
   
 ### Visualization
 ```bash
 $ cd rviz
 $ rviz -d rviz.rviz
 ```
-![2](figures/2.gif)  
-![3](figures/3.gif)  
+![2](figures/2.png)  
+![3](figures/3.png)  
 
 ### Evaluate (After finish icp you will get a .csv file in result folder)
 #### numpy

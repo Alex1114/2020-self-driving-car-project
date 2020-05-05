@@ -74,14 +74,15 @@ private:
 
     int frame = 1;
     float max_xy = 50;
-    float max_car_xx = 30;
-    float max_car_x = 30;
-    float max_car_yy = 15;
-    float max_car_y = 15;
+    float max_car_xx = 30;  //max_car_+x
+    float max_car_x = 30;   //max_car_-x
+    float max_car_yy = 15;  //max_car_+y
+    float max_car_y = 15;   //max_car_-y
     float max_car_z = 10;
     float min_car_z = -10;
     float leaf_size = 0.5;
     double r=0, p=0, y=2.97;
+
 
 public:
     ICP_method1(NodeHandle &);
