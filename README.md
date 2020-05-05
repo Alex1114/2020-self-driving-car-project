@@ -20,13 +20,13 @@ $ roslaunch localization icp_easy_[1~3].launch
 Open another terminal.
   
 $ cd ~/self-driving-car-project/data/ITRI
-$ rosbag play ITRI_Private_[1~3].bag
+$ rosbag play ITRI_Private_[___1~3___].bag
 ```
   
-#### Nuscenes_Private_1.bag
+#### Nuscenes_Private_1~3.bag
 ```bash
 $ source environment.sh
-$ roslaunch localization icp_medium_[1~3].launch 
+$ roslaunch localization icp_medium_[___1~3___].launch 
   
 Open another terminal.
   
