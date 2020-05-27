@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>argoverse_ros</name>
+  <version>1.0.0</version>
+  <description>The argoverse_ros package</description>
+
+  <!-- One maintainer tag required, multiple allowed, one person per tag -->
+  <maintainer email="heethesh@cmu.edu">Heethesh Vhavle</maintainer>
+
+
+  <!-- One license tag required, multiple allowed, one license per tag -->
+  <license>BSD</license>
+
+
+  <!-- Url tags are optional, but multiple are allowed, one per tag -->
+  <url type="repository">https://github.com/heethesh/argoverse_ros</url>
+
+
+  <!-- Author tags are optional, multiple are allowed, one per tag -->
+  <author email="heethesh@cmu.edu">Heethesh Vhavle</author>
+
+
+  <!-- The *depend tags are used to specify dependencies -->
+  <!-- Dependencies can be catkin packages or system dependencies -->
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>xacro</depend>
+
+
+  <!-- The export tag contains other, unspecified, tags -->
+  <export>
+    <!-- Other tools can request additional information be placed here -->
+
+  </export>
+</package>
