@@ -7,3 +7,4 @@ build/
 *.csv
 data/
 temp_files/
+sample/
