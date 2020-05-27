@@ -10,7 +10,9 @@ import pdb
 from tqdm import tqdm
 import uuid
 
-from ab3dmot import AB3DMOT
+# from ab3dmot import AB3DMOT
+from ab3dmot_mahalanobis import AB3DMOT
+
 
 import argoverse
 from argoverse.data_loading.object_label_record import json_label_dict_to_obj_record

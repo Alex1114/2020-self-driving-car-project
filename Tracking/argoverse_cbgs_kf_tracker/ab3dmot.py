@@ -4,7 +4,8 @@ from filterpy.kalman import KalmanFilter
 import matplotlib.pyplot as plt
 import numpy as np
 import pdb
-from sklearn.utils.linear_assignment_ import linear_assignment
+# from sklearn.utils.linear_assignment_ import linear_assignment
+from scipy.optimize import linear_sum_assignment
 import sys
 import time
 
@@ -168,7 +169,10 @@ def associate_detections_to_trackers(detections,trackers,iou_threshold=0.1):
       #iou_matrix[d,t] = iou3d(det,trk)[1] # try 2d iou instead             # det: 8 x 3, trk: 8 x 3
       iou_matrix[d,t] = compute_iou_2d_bboxes(det, trk)
 
-  matched_indices = linear_assignment(-iou_matrix)      # hungarian algorithm
+  # matched_indices = linear_assignment(-iou_matrix)      # hungarian algorithm
+  indices = linear_sum_assignment(-iou_matrix)  
+  indices = np.asarray(indices)
+  matched_indices = np.transpose(indices)
 
   unmatched_detections = []
   for d,det in enumerate(detections):
