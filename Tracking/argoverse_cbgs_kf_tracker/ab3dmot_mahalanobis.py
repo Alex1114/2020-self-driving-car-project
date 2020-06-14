@@ -510,7 +510,7 @@ class AB3DMOT(object):
             trks_S = np.stack(trks_S, axis=0)
 
         matched, unmatched_dets, unmatched_trks = associate_detections_to_trackers(
-            dets_8corner, trks_8corner, use_mahalanobis=True, dets=dets, trks=trks, trks_S=trks_S, mahalanobis_threshold=11, print_debug=False, match_algorithm='greedy')
+            dets_8corner, trks_8corner, use_mahalanobis=True, dets=dets, trks=trks, trks_S=trks_S, mahalanobis_threshold=11, print_debug=True, match_algorithm='greedy')
 
         # update matched trackers with assigned detections
         for t, trk in enumerate(self.trackers):

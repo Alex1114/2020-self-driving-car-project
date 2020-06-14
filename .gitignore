@@ -8,3 +8,7 @@ build/
 data/
 temp_files/
 sample/
+argoverse_detections_2020/
+tracker_output/
+nctu_dataset/
+*.pyc
